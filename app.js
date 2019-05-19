@@ -10,11 +10,13 @@ const requestData = (req, res, next) => {
   next()
 }
 
-const responseData = res => {
-  const { startDate, path, method } = res.locals
-  const nowDate = new Date()
-  const times = nowDate - startDate
-  console.log(`${startDate.toLocaleString()} | ${method} From ${path} | Total time: ${times}ms`)
+const responseData = (req, res) => {
+  if (req.originalUrl.indexOf('favicon.ico') === -1) {
+    const { startDate, path, method } = res.locals
+    const nowDate = new Date()
+    const times = nowDate - startDate
+    console.log(`${startDate.toLocaleString()} | ${method} From ${path} | Total time: ${times}ms`)
+  }
 }
 
 app.use(requestData)
@@ -24,30 +26,30 @@ app.set('view engine', 'handlebars')
 // 列出全部 Todo
 app.get('/', (req, res) => {
   res.render('index', { message: '顯示所有Todo' })
-  responseData(res)
+  responseData(req, res)
 })
 
 // 新增一筆 Todo 頁面
 app.get('/new', (req, res) => {
   res.render('index', { message: '新增 Todo 頁面' })
-  responseData(res)
+  responseData(req, res)
 })
 
 // 顯示一筆 Todo 的詳細內容
 app.get('/:id', (req, res) => {
   res.render('index', { message: '顯示一筆Todo' })
-  responseData(res)
+  responseData(req, res)
 })
 
 // 新增一筆  Todo
 app.post('/', (req, res) => {
   res.render('index', { message: 'POST-新增一筆 Todo' })
-  responseData(res)
+  responseData(req, res)
 })
 
 app.post('/:id/delete', (req, res) => {
   res.render('index', { message: 'POST-刪除 Todo' })
-  responseData(res)
+  responseData(req, res)
 })
 
 app.listen(port, () => {
